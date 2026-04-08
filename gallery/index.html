@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Виджет промокода — каталог сценариев</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 24px max(20px, 4vw) 48px;
+        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+        max-width: 54rem;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      .lead {
+        margin: 0 0 24px;
+        color: #475569;
+        font-size: 0.95rem;
+      }
+      .note {
+        background: #e0f2fe;
+        color: #0c4a6e;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        margin-bottom: 28px;
+      }
+      section {
+        margin-bottom: 32px;
+        padding: 18px 18px 20px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      }
+      section h2 {
+        margin: 0 0 6px;
+        font-size: 1.05rem;
+        font-weight: 650;
+      }
+      .meta {
+        margin: 0 0 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+        font-weight: 600;
+      }
+      p.desc {
+        margin: 0 0 12px;
+        color: #334155;
+        font-size: 0.92rem;
+      }
+      .open {
+        display: inline-block;
+        margin-bottom: 12px;
+        font-weight: 600;
+        color: #1d4ed8;
+        text-decoration: none;
+      }
+      .open:hover {
+        text-decoration: underline;
+      }
+      .snippet-wrap {
+        position: relative;
+        margin-top: 8px;
+      }
+      pre {
+        margin: 0;
+        padding: 12px 14px;
+        background: #1e293b;
+        color: #e2e8f0;
+        border-radius: 8px;
+        font-size: 11px;
+        line-height: 1.45;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .copy-row {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      button.copy {
+        font: inherit;
+        font-size: 13px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        cursor: pointer;
+        color: #0f172a;
+      }
+      button.copy:hover {
+        background: #f1f5f9;
+      }
+      button.copy:disabled {
+        opacity: 0.7;
+        cursor: default;
+      }
+      ul.hint {
+        margin: 8px 0 0;
+        padding-left: 1.2em;
+        color: #475569;
+        font-size: 0.88rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Каталог сценариев внедрения</h1>
+    <p class="lead">
+      Один виджет (рейка + панель), разные способы подключения и тестовые страницы. Новый тип баннера —
+      новый HTML-стенд и новая секция здесь.
+    </p>
+    <p class="note">
+      Локально откройте из <strong>корня</strong> репозитория:
+      <code>python3 -m http.server 8765</code>
+      — иначе пути <code>/css/...</code> не сработают. Полный список URL см.
+      <a href="/local-test/LOCAL_SERVER.txt"><code>local-test/LOCAL_SERVER.txt</code></a>.
+    </p>
+
+    <section id="split">
+      <div class="meta">Split · основной прод-шаблон</div>
+      <h2>Отдельно CSS + config.js + widget.js</h2>
+      <p class="desc">
+        Как на сайте: шрифты, таблица стилей, разметка <code>#coupon-root</code>, затем скрипты с
+        <code>defer</code>. Конфиг правьте в <code>js/config.js</code>.
+      </p>
+      <a class="open" href="/local-test/host-split.html" target="_blank" rel="noopener">Открыть демо →</a>
+      <div class="snippet-wrap">
+        <pre id="snippet-split">&lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet" /&gt;
+&lt;!-- Подставьте базовый URL вместо / при выкладке --&gt;
+&lt;link rel="stylesheet" href="/css/widget.css" /&gt;
+&lt;!-- Разметка: скопируйте блок #coupon-root из html/widget.html --&gt;
+&lt;script src="/js/config.js" defer&gt;&lt;/script&gt;
+&lt;script src="/js/widget.js" defer&gt;&lt;/script&gt;</pre>
+      </div>
+      <div class="copy-row">
+        <button type="button" class="copy" data-target="snippet-split">Копировать фрагмент</button>
+      </div>
+    </section>
+
+    <section id="fixed-host">
+      <div class="meta">Fixed host · как на проде слева по высоте</div>
+      <h2>Фиксированный виджет без «демо»-класса на body</h2>
+      <p class="desc">
+        Тело страницы без <code>coupon-widget-doc</code>: виджет в режиме хоста (fixed, слева). Длинная
+        прокрутка контента для проверки.
+      </p>
+      <a class="open" href="/local-test/host-fixed-center-left.html" target="_blank" rel="noopener"
+        >Открыть демо →</a
+      >
+      <ul class="hint">
+        <li>На корневом элементе: <code>class="coupon-root coupon-root--host"</code> (см. разметку в демо).</li>
+        <li>Перед первым показом: <code>hidden</code> и <code>data-ready="false"</code>.</li>
+      </ul>
+    </section>
+
+    <section id="no-root-class">
+      <div class="meta">Edge case</div>
+      <h2>Только <code>id="coupon-root"</code>, без класса <code>coupon-root</code></h2>
+      <p class="desc">
+        Проверка, что <code>widget.js</code> сам добавляет класс — токены CSS не должны ломаться.
+      </p>
+      <a class="open" href="/local-test/host-no-root-class.html" target="_blank" rel="noopener"
+        >Открыть демо →</a
+      >
+    </section>
+
+    <section id="widget-html">
+      <div class="meta">Референс разметки</div>
+      <h2><code>html/widget.html</code></h2>
+      <p class="desc">
+        Эталонная страница репозитория с относительными путями <code>../css/</code>. Удобно сверять
+        структуру DOM перед копированием на хостинг.
+      </p>
+      <a class="open" href="/html/widget.html" target="_blank" rel="noopener">Открыть демо →</a>
+    </section>
+
+    <section id="all-in-one">
+      <div class="meta">Один файл</div>
+      <h2><code>widget-all-in-one.html</code></h2>
+      <p class="desc">
+        Всё в одном HTML: стили и скрипты встроены после синхронизации с исходниками.
+      </p>
+      <a class="open" href="/widget-all-in-one.html" target="_blank" rel="noopener">Открыть демо →</a>
+      <div class="snippet-wrap">
+        <pre id="snippet-aio"># После правок в css/ или js/:
+python3 local-test/sync_all_in_one.py
+
+# Вставка: перенесите содержимое widget-all-in-one.html в шаблон страницы
+# или подключите как отдельную страницу / виджет по правилам вашей CMS.</pre>
+      </div>
+      <div class="copy-row">
+        <button type="button" class="copy" data-target="snippet-aio">Копировать подсказку</button>
+      </div>
+    </section>
+
+    <section id="config">
+      <div class="meta">Конфигурация</div>
+      <h2><code>js/config.js</code></h2>
+      <p class="desc">
+        Поля <code>window.COUPON_CONFIG</code> — единая точка настроек для всех демо и прод-вставок
+        (код, сноска, CTA, отступы, поведение при наведении и т.д.).
+      </p>
+      <a class="open" href="/js/config.js" target="_blank" rel="noopener">Открыть файл →</a>
+    </section>
+
+    <script>
+      (function () {
+        document.querySelectorAll("button.copy").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var id = btn.getAttribute("data-target");
+            var el = id && document.getElementById(id);
+            if (!el) return;
+            var text = el.textContent;
+            function done() {
+              var prev = btn.textContent;
+              btn.textContent = "Скопировано";
+              btn.disabled = true;
+              setTimeout(function () {
+                btn.textContent = prev;
+                btn.disabled = false;
+              }, 1600);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done).catch(fallback);
+            } else {
+              fallback();
+            }
+            function fallback() {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed";
+              ta.style.left = "-9999px";
+              document.body.appendChild(ta);
+              ta.select();
+              try {
+                document.execCommand("copy");
+                done();
+              } catch (_) {}
+              document.body.removeChild(ta);
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

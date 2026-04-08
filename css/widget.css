@@ -1,0 +1,1250 @@
+/* Letterbox — макет секции Figma 277:456 (рейка 277:471, развёрнуто 277:457, body 277:458) */
+#coupon-root[hidden] {
+  display: none !important;
+}
+
+.coupon-root,
+.coupon-root *,
+.coupon-root *::before,
+.coupon-root *::after {
+  box-sizing: border-box;
+}
+
+html.coupon-widget-doc {
+  /* Шрифты для страницы-демо (виджет задаёт те же токены у себя) */
+  --coupon-font: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --coupon-code-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  /* Как у типичного логотипа Tilda (t135 ~20px); шире — hostInlinePx в COUPON_CONFIG */
+  --coupon-host-inline: 20px;
+  --coupon-host-bottom: 50px;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.coupon-root {
+  /* На хосте: fixed + поля от краёв; слева по умолчанию как t135 (~20px), не 50 — иначе расходится с шапкой */
+  --coupon-host-inline: 20px;
+  --coupon-host-bottom: 50px;
+  --lb-black: #000000;
+  --lb-white: #ffffff;
+  --coupon-accent: #2958ff;
+  /* Единая «стеклянная» база: свёрнуто и развёрнуто одной гаммы */
+  --coupon-surface: #eef1f7;
+  --coupon-surface-border: rgba(15, 23, 42, 0.14);
+  /* Figma Letterbox 277:457 / 289:505 */
+  --coupon-figma-border: #eeeeee;
+  --coupon-figma-border-collapsed: #e6e6e6;
+  --coupon-footnote-muted: rgba(123, 123, 123, 0.76);
+  --lb-code-bg: rgba(255, 217, 0, 0.3);
+  --lb-card-border: rgba(255, 255, 255, 0.72);
+  --coupon-font: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --coupon-code-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  --coupon-tap-min: 44px;
+  /* Figma 277:471 «Шапка»: ~112×356 */
+  --coupon-rail-width: 112px;
+  --coupon-rail-min-height: 380px;
+  --coupon-rail-anchor-half: calc(var(--coupon-rail-min-height) / 2);
+  --coupon-rail-label-min-height: 200px;
+  --coupon-rail-label-min-width: 100%;
+  --coupon-rail-pad: 24px 28px 24px;
+  /* ≥ рейка + разделитель + колонка контента (~112+2+362); 328px обрезал текст/Cta */
+  --panel-expanded: 520px;
+  /* Figma Шапка rounded-[24px] */
+  --coupon-radius: 24px;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+  --dur-open: 0.46s;
+  --dur-close: 0.42s;
+  /* Общее уменьшение блока (визуальный scale, origin слева по центру) */
+  --coupon-ui-scale: 0.86;
+  /* Запас от верха/низа и справа экрана, чтобы блок не прилипал и не «прыгал» у краёв */
+  --coupon-vp-x-gutter: 10px;
+  --coupon-vp-y-gutter: 16px;
+  --coupon-max-bleed: min(
+    var(--panel-expanded),
+    calc(
+      100vw - max(var(--coupon-host-inline), env(safe-area-inset-left, 0px)) -
+        max(12px, env(safe-area-inset-right, 0px)) - var(--coupon-vp-x-gutter)
+    )
+  );
+  pointer-events: auto;
+  width: fit-content;
+  max-width: var(--coupon-max-bleed);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  font-family: var(--coupon-font);
+  color: var(--lb-black);
+}
+
+@media (max-width: 768px) {
+  html.coupon-widget-doc,
+  .coupon-root {
+    /* Совпадает с отступом логотипа в шапке Tilda (t135: часто top/left 20px у img.t135__img) */
+    --coupon-host-inline: 20px;
+    --coupon-host-bottom: 24px;
+    /* На планшетах/телефонах не даём scale 0.86 «наслаиваться» на уменьшенные токены 480px */
+    --coupon-ui-scale: 0.92;
+    --coupon-vp-x-gutter: 18px;
+    --coupon-vp-y-gutter: 36px;
+    /* Без потолка 520px: развёрнутая панель может занять почти всю ширину экрана */
+    --panel-expanded: calc(
+      100vw - max(var(--coupon-host-inline), env(safe-area-inset-left, 0px)) -
+        max(12px, env(safe-area-inset-right, 0px)) - var(--coupon-vp-x-gutter)
+    );
+  }
+
+  /*
+   * Стабильная ширина корня: раньше width был fit-content в свёрнутом виде и --coupon-max-bleed
+   * только при data-expanded=true → скачок вёрстки страницы / полосы прокрутки. Держим ширину
+   * постоянной; пустая область справа не перехватывает клики (pointer-events).
+   */
+  .coupon-root {
+    width: var(--coupon-max-bleed);
+    max-width: var(--coupon-max-bleed);
+    pointer-events: none;
+    /* Иначе узкая свёрнутая панель центрируется, а width:100% развёрнутая — к левому краю: рейка «прыгает» */
+    justify-content: flex-start;
+  }
+
+  .coupon-root .coupon-panel {
+    pointer-events: auto;
+  }
+
+  .coupon-root.coupon-root--host {
+    max-height: min(
+      calc(100dvh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+      calc(100vh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+      calc(
+        100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          var(--coupon-vp-y-gutter)
+      ),
+      calc(
+        100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          var(--coupon-vp-y-gutter)
+      )
+    );
+  }
+
+  .coupon-panel {
+    max-height: min(
+      calc(100dvh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+      calc(100vh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+      calc(
+        100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          var(--coupon-vp-y-gutter)
+      ),
+      calc(
+        100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          var(--coupon-vp-y-gutter)
+      )
+    );
+  }
+
+  .coupon-panel[data-expanded="true"] .coupon-expand {
+    flex: 1 1 0;
+    min-width: 0;
+    max-height: min(
+      calc(100dvh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+      calc(100vh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+      calc(
+        100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          var(--coupon-vp-y-gutter)
+      ),
+      calc(
+        100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+          var(--coupon-vp-y-gutter)
+      )
+    );
+  }
+
+  .coupon-body {
+    padding: 26px 24px 22px;
+  }
+
+  .coupon-body-main {
+    gap: 12px;
+  }
+
+  .coupon-close-full {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  .coupon-close-full svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .coupon-code {
+    font-size: 28px;
+    letter-spacing: 0.09em;
+    min-height: 80px;
+    padding: 20px 14px;
+  }
+
+  .coupon-footnote {
+    font-size: 12px;
+    letter-spacing: -0.24px;
+    line-height: 1.4;
+  }
+
+  .coupon-description {
+    font-size: 18px;
+    letter-spacing: -0.54px;
+  }
+
+  .coupon-cta {
+    height: 56px;
+    min-height: 56px;
+    font-size: 21px;
+    letter-spacing: -0.42px;
+    padding: 12px 26px;
+  }
+
+  .coupon-panel[data-expanded="true"] {
+    width: 100%;
+    max-width: 100%;
+    /* Рейка и колонка контента — одна высота (единая карточка) */
+    align-items: stretch;
+  }
+
+  .coupon-panel[data-expanded="true"] .coupon-main {
+    max-width: none;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  html.coupon-widget-doc,
+  .coupon-root {
+    --coupon-host-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  }
+}
+
+html.coupon-widget-doc,
+body.coupon-widget-doc {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+  font-family: var(--coupon-font);
+  background: transparent;
+  color: #000000;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.coupon-widget-doc {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: max(12px, env(safe-area-inset-top, 0px))
+    max(var(--coupon-host-inline), env(safe-area-inset-right, 0px))
+    max(var(--coupon-host-bottom), env(safe-area-inset-bottom, 0px))
+    max(var(--coupon-host-inline), env(safe-area-inset-left, 0px));
+  pointer-events: none;
+  overflow: visible;
+}
+
+.coupon-root.coupon-root--host {
+  position: fixed;
+  left: max(var(--coupon-host-inline), env(safe-area-inset-left, 0px));
+  right: auto;
+  /* Центр по высоте всего блока (рейка+панель), а не только рейки — иначе при раскрытии
+     контент «уезжает» вниз/вправо, а верх визуально прибит */
+  top: 50%;
+  bottom: auto;
+  z-index: 9999;
+  margin: 0;
+  width: fit-content;
+  max-width: var(--coupon-max-bleed);
+  max-height: min(
+    calc(100dvh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+    calc(100vh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter))
+  );
+  /* Тень на корне (drop-shadow), без overflow:hidden — не обрезается */
+  overflow: visible;
+  transform: translateY(-50%);
+  filter: drop-shadow(0 4px 18px rgba(15, 23, 42, 0.12))
+    drop-shadow(0 2px 6px rgba(15, 23, 42, 0.07));
+  transition: filter 0.35s ease;
+}
+
+/* Сильнее базовой: развёрнуто, hover/focus свёрнуто (после клика :hover пропадает — без этого тень «съедается») */
+.coupon-root.coupon-root--host:has(.coupon-panel[data-expanded="true"]),
+.coupon-root.coupon-root--host:has(.coupon-panel[data-expanded="false"]:hover),
+.coupon-root.coupon-root--host:has(.coupon-panel[data-expanded="false"]:focus-within) {
+  filter: drop-shadow(0 6px 22px rgba(15, 23, 42, 0.14))
+    drop-shadow(0 2px 8px rgba(15, 23, 42, 0.08));
+}
+
+.coupon-panel {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: max-content;
+  max-width: var(--coupon-max-bleed);
+  max-height: min(
+    calc(100dvh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+    calc(100vh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter))
+  );
+  border-radius: var(--coupon-radius);
+  overflow: hidden;
+  border: 2px solid transparent;
+  transform: scale(var(--coupon-ui-scale));
+  transform-origin: left center;
+  transition:
+    background var(--dur-open) var(--ease-spring),
+    border-color 0.35s ease,
+    opacity 0.4s var(--ease-in-out);
+}
+
+.coupon-panel[data-expanded="true"] {
+  /* Развёрнуто: непрозрачная заливка (без glass / blur) */
+  background: var(--lb-white);
+  border-color: var(--coupon-figma-border);
+  overflow: hidden;
+  opacity: 1;
+}
+
+.coupon-panel[data-expanded="false"] {
+  /* 20% прозрачность в покое; :hover / :focus-within / развёрнуто — непрозрачно */
+  opacity: 0.8;
+  background: var(--lb-white);
+  border-color: var(--coupon-figma-border-collapsed);
+  /* Подпись с rotate выступает по горизонтали — иначе обрезка */
+  overflow: visible;
+  /* Свёрнутая панель = только рейка: жёсткий минимум, без схлопывания flex/grid */
+  min-width: 112px;
+  min-width: var(--coupon-rail-width);
+  min-height: 380px;
+  min-height: var(--coupon-rail-min-height);
+}
+
+.coupon-panel[data-expanded="false"]:hover,
+.coupon-panel[data-expanded="false"]:focus-within {
+  opacity: 1;
+}
+
+/* Вертикальная рейка (Figma 277:471 / 289:505; в строке: Скидка + 10%; rotate(90deg)) */
+.coupon-rail.coupon-header,
+.coupon-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 112px;
+  width: var(--coupon-rail-width);
+  min-width: 112px;
+  min-width: var(--coupon-rail-width);
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-family: var(--coupon-font);
+  color: var(--lb-black);
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  align-self: stretch;
+  min-height: 380px;
+  min-height: var(--coupon-rail-min-height);
+  height: auto;
+  overflow: visible;
+}
+
+/* Выше специфичность хостовых reset’ов вроде button { min-height: 0 } */
+#coupon-header.coupon-rail.coupon-header {
+  min-width: 112px;
+  min-width: var(--coupon-rail-width);
+  min-height: 380px;
+  min-height: var(--coupon-rail-min-height);
+}
+
+/*
+ * Ниже базового .coupon-rail — иначе каскад затирает.
+ * Свёрнуто: узкая рейка фиксированной высоты. Развёрнуто: та же ширина рейки, высота = высоте панели.
+ */
+@media (max-width: 768px) {
+  .coupon-panel[data-expanded="false"] .coupon-rail.coupon-header,
+  .coupon-panel[data-expanded="false"] .coupon-rail {
+    align-self: flex-start;
+    flex: 0 0 var(--coupon-rail-width);
+    width: var(--coupon-rail-width);
+    max-width: var(--coupon-rail-width);
+    box-sizing: border-box;
+  }
+
+  .coupon-panel[data-expanded="true"] .coupon-rail.coupon-header,
+  .coupon-panel[data-expanded="true"] .coupon-rail {
+    align-self: stretch;
+    flex: 0 0 var(--coupon-rail-width);
+    width: var(--coupon-rail-width);
+    max-width: var(--coupon-rail-width);
+    min-height: var(--coupon-rail-min-height);
+    height: auto;
+    max-height: none;
+    box-sizing: border-box;
+  }
+
+  .coupon-panel[data-expanded="false"] .coupon-expand {
+    flex: 0 0 0;
+    min-width: 0;
+  }
+}
+
+.coupon-rail:focus-visible,
+.coupon-header:focus-visible {
+  outline: 2px solid var(--coupon-accent);
+  outline-offset: 2px;
+}
+
+/* Обертка: центр внутри рейки; при align-items:stretch у панели рейка тянется по высоте развёрнутого блока */
+.coupon-rail-stack {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 112px;
+  min-width: var(--coupon-rail-width);
+  min-height: 380px;
+  min-height: var(--coupon-rail-min-height);
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+}
+
+/* Подпись + шеврон: только строка крутится — не режем узкой колонкой как весь .coupon-rail-rot */
+.coupon-rail-rot {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: var(--coupon-rail-width);
+  min-height: min-content;
+  width: 100%;
+  padding: var(--coupon-rail-pad);
+  box-sizing: border-box;
+  gap: 24px;
+}
+
+.coupon-rail-label-wrap {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--coupon-rail-label-min-width);
+  min-height: var(--coupon-rail-label-min-height);
+  width: 100%;
+  overflow: visible;
+}
+
+.coupon-rail-label-row {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  /* Текст вдоль рейки: поворот +90° (не зеркалирование) */
+  transform: rotate(90deg);
+  transform-origin: center center;
+  width: max-content;
+  min-width: max-content;
+  min-height: 1.25em;
+}
+
+/* Figma 283:485 — 34px; порядок: Скидка, затем процент */
+.coupon-kicker {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.02px;
+  color: var(--coupon-accent);
+  flex-shrink: 0;
+  text-transform: uppercase;
+  min-height: 1em;
+  min-width: 0.5em;
+}
+
+.coupon-title {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1.02px;
+  color: var(--lb-black);
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-height: 1em;
+  min-width: 2.5ch;
+}
+
+.coupon-rail .coupon-kicker:empty {
+  display: none;
+}
+
+.coupon-chevron {
+  flex-shrink: 0;
+  /* Figma 277:475 — 64×64 */
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--lb-black);
+  display: grid;
+  place-items: center;
+}
+
+.coupon-chevron svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  margin-top: 0;
+  transform-origin: center;
+  transition: transform var(--dur-open) var(--ease-spring);
+}
+
+/* Свёрнуто: шеврон вправо (раскрыть); развёрнуто: влево (свернуть) */
+.coupon-panel[data-expanded="false"] .coupon-chevron svg {
+  transform: rotate(90deg);
+}
+
+.coupon-panel[data-expanded="true"] .coupon-chevron svg {
+  transform: rotate(-90deg);
+}
+
+.coupon-expand {
+  display: grid;
+  grid-template-columns: 0fr;
+  min-width: 0;
+  min-height: 0;
+  align-self: stretch;
+  transition: grid-template-columns var(--dur-open) var(--ease-spring);
+}
+
+.coupon-panel[data-expanded="false"] .coupon-expand {
+  grid-template-columns: 0fr;
+  pointer-events: none;
+  transition: grid-template-columns var(--dur-close) var(--ease-out);
+  /* Иначе скрытый блок с контентом задаёт высоту строки ~300px — рейка растягивается */
+  max-height: 0;
+  overflow: hidden;
+}
+
+.coupon-panel[data-expanded="true"] .coupon-expand {
+  grid-template-columns: 1fr;
+  max-height: min(
+    calc(100dvh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter)),
+    calc(100vh - 2 * var(--coupon-host-inline) - var(--coupon-vp-y-gutter))
+  );
+}
+
+.coupon-expand-inner {
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-close) var(--ease-in-out);
+}
+
+.coupon-panel[data-expanded="false"] .coupon-expand-inner {
+  opacity: 0;
+  transform: none;
+}
+
+.coupon-panel[data-expanded="true"] .coupon-expand-inner {
+  opacity: 1;
+  transition: opacity 0s linear;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.coupon-divider-vertical {
+  flex-shrink: 0;
+  width: 2px;
+  align-self: stretch;
+  background: var(--coupon-figma-border);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.coupon-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  /* Figma 277:458 Body внутренняя колонка 306 + по 28px с боков */
+  max-width: 362px;
+  display: flex;
+  flex-direction: column;
+}
+
+.coupon-panel[data-expanded="true"] .coupon-main {
+  min-width: min(
+    306px,
+    calc(
+      100vw - var(--coupon-rail-width) - 2px - 2 * var(--coupon-host-inline) -
+        var(--coupon-vp-x-gutter)
+    )
+  );
+}
+
+.coupon-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 0;
+  padding: 28px 28px 24px;
+  box-sizing: border-box;
+}
+
+.coupon-body-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.coupon-body-main {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  justify-content: center;
+}
+
+.coupon-body-head {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.coupon-close-full {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--lb-black);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font: inherit;
+  line-height: 0;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.coupon-close-full:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.coupon-close-full:focus-visible {
+  outline: 2px solid var(--coupon-accent);
+  outline-offset: 2px;
+}
+
+.coupon-close-full:active {
+  transform: scale(0.96);
+}
+
+.coupon-close-full svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.coupon-description {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.6px;
+  color: var(--lb-black);
+  font-weight: 400;
+}
+
+.coupon-description:empty,
+.coupon-description[hidden] {
+  display: none !important;
+}
+
+.coupon-code-wrap {
+  border-radius: 14px;
+  border: 4px dashed var(--lb-black);
+  background: var(--lb-code-bg);
+}
+
+.coupon-code {
+  width: 100%;
+  min-height: 90px;
+  font-family: var(--coupon-code-font);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 0.12em; /* Figma 3.84px при 32px */
+  padding: 24px 16px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--lb-black);
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+}
+
+.coupon-code:hover,
+.coupon-code:focus-visible {
+  opacity: 0.9;
+  outline: none;
+}
+
+.coupon-code:active {
+  transform: scale(0.99);
+}
+
+.coupon-copy-hint {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.coupon-copy-hint[hidden] {
+  display: none !important;
+}
+
+.coupon-copy-hint[data-copied="true"] {
+  color: var(--coupon-accent);
+  font-weight: 600;
+}
+
+.coupon-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  margin-top: auto;
+  padding: 12px 32px;
+  height: 60px;
+  min-height: 60px;
+  border-radius: 99px;
+  border: none;
+  font-family: var(--coupon-font);
+  background: var(--coupon-accent);
+  color: var(--lb-white);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: -0.48px;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+
+.coupon-cta:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.coupon-cta:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.coupon-cta:disabled {
+  opacity: 0.88;
+  cursor: default;
+}
+
+.coupon-cta:focus-visible {
+  outline: 2px solid var(--coupon-accent);
+  outline-offset: 2px;
+}
+
+.coupon-footnote {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.22px;
+  color: var(--coupon-footnote-muted);
+}
+
+.coupon-footnote[hidden] {
+  display: none !important;
+}
+
+.coupon-root[data-ready="false"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: none;
+}
+
+/* Хост: фиксированная позиция с первого кадра (нужен class coupon-root--host в HTML до JS) */
+.coupon-root.coupon-root--host[data-ready="false"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.coupon-root[data-ready="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity 0.45s var(--ease-in-out),
+    transform 0.4s var(--ease-spring),
+    visibility 0s linear 0s;
+}
+
+.coupon-root.coupon-root--host[data-ready="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coupon-root {
+    --dur-open: 0.01ms;
+    --dur-close: 0.01ms;
+    transition-duration: 0.01ms;
+  }
+
+  .coupon-expand-inner {
+    transform: none !important;
+  }
+
+  .coupon-root:not(.coupon-root--host)[data-ready="false"],
+  .coupon-root:not(.coupon-root--host)[data-ready="true"] {
+    transition: opacity 0.2s ease-in-out;
+    transform: none;
+  }
+
+  .coupon-root.coupon-root--host[data-ready="false"],
+  .coupon-root.coupon-root--host[data-ready="true"] {
+    transition: opacity 0.2s ease-in-out;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/*
+ * ≤768: при раскрытии высота панели растёт — translateY(-50%) смещает весь блок.
+ * Якорь сверху + без transform; на ≤480 Figma ниже задаёт top: 123px.
+ * Дублируем после prefers-reduced-motion, иначе там снова включается translateY(-50%).
+ */
+@media (max-width: 768px) {
+  .coupon-root.coupon-root--host,
+  .coupon-root.coupon-root--host[data-ready="false"],
+  .coupon-root.coupon-root--host[data-ready="true"] {
+    top: max(24px, env(safe-area-inset-top, 0px));
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Figma Letterbox Mobile — node 297:705 / frames 296:597 (Closed), 296:633 (Open) */
+  .coupon-panel {
+    border-width: 1px;
+  }
+
+  .coupon-root {
+    --coupon-rail-width: 48px;
+    --coupon-rail-pad: 8px 12px 8px;
+    --coupon-rail-min-height: 132px;
+    --coupon-rail-anchor-half: calc(var(--coupon-rail-min-height) / 2);
+    --coupon-rail-label-min-height: 48px;
+    --coupon-ui-scale: 0.96;
+    --coupon-radius: 12px;
+    --coupon-vp-x-gutter: 10px;
+    --coupon-vp-y-gutter: 36px;
+    --panel-expanded: calc(
+      100vw - max(var(--coupon-host-inline), env(safe-area-inset-left, 0px)) -
+        max(8px, env(safe-area-inset-right, 0px)) - var(--coupon-vp-x-gutter)
+    );
+  }
+
+  .coupon-rail.coupon-header,
+  .coupon-rail,
+  .coupon-code,
+  .coupon-cta {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .coupon-rail.coupon-header,
+  .coupon-rail {
+    width: 48px;
+    width: var(--coupon-rail-width);
+    min-width: 48px;
+    min-width: var(--coupon-rail-width);
+    min-height: 132px;
+    min-height: var(--coupon-rail-min-height);
+    flex: 0 0 var(--coupon-rail-width);
+  }
+
+  .coupon-panel[data-expanded="false"] .coupon-rail.coupon-header,
+  .coupon-panel[data-expanded="false"] .coupon-rail {
+    align-self: flex-start;
+  }
+
+  #coupon-header.coupon-rail.coupon-header {
+    min-width: 48px;
+    min-width: var(--coupon-rail-width);
+    min-height: 132px;
+    min-height: var(--coupon-rail-min-height);
+    flex: 0 0 var(--coupon-rail-width);
+    width: var(--coupon-rail-width);
+    max-width: var(--coupon-rail-width);
+    box-sizing: border-box;
+  }
+
+  /* Только свёрнуто — компактная рейка; развёрнуто высоту задаёт stretch рядом с контентом */
+  .coupon-panel[data-expanded="false"] #coupon-header.coupon-rail.coupon-header {
+    height: var(--coupon-rail-min-height);
+    max-height: var(--coupon-rail-min-height);
+    overflow: hidden;
+  }
+
+  .coupon-panel[data-expanded="true"] #coupon-header.coupon-rail.coupon-header {
+    height: auto;
+    max-height: none;
+    align-self: stretch;
+    overflow: visible;
+  }
+
+  .coupon-panel[data-expanded="false"] {
+    opacity: 0.6;
+    min-width: 48px;
+    min-width: var(--coupon-rail-width);
+    min-height: 132px;
+    min-height: var(--coupon-rail-min-height);
+  }
+
+  .coupon-panel[data-expanded="false"]:hover,
+  .coupon-panel[data-expanded="false"]:focus-within {
+    opacity: 1;
+  }
+
+  .coupon-rail-stack {
+    min-width: 48px;
+    min-width: var(--coupon-rail-width);
+    min-height: 132px;
+    min-height: var(--coupon-rail-min-height);
+  }
+
+  /* В макете на рейке только «Скидка» (без процента) */
+  .coupon-rail-label-row .coupon-kicker {
+    display: none !important;
+  }
+
+  .coupon-rail-label-row {
+    gap: 0;
+  }
+
+  .coupon-title {
+    font-size: 15.68px;
+    font-weight: 700;
+    letter-spacing: -0.4704px;
+  }
+
+  .coupon-kicker {
+    font-size: 18px;
+    letter-spacing: -0.54px;
+  }
+
+  .coupon-rail-rot {
+    gap: 7.38px;
+    justify-content: center;
+  }
+
+  .coupon-chevron {
+    width: 29.52px;
+    height: 29.52px;
+    min-width: 29.52px;
+    min-height: 29.52px;
+  }
+
+  .coupon-chevron svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .coupon-main {
+    min-width: 0;
+    max-width: none;
+    flex: 1 1 0;
+  }
+
+  .coupon-body {
+    padding: 12px;
+    justify-content: flex-start;
+  }
+
+  .coupon-body-top {
+    gap: 0;
+  }
+
+  .coupon-body-main {
+    gap: 12px;
+    justify-content: flex-start;
+  }
+
+  .coupon-body-head {
+    display: none;
+  }
+
+  .coupon-close-full {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .coupon-close-full svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .coupon-code-wrap {
+    border-radius: 6.46px;
+    border-width: 1.85px;
+  }
+
+  .coupon-code {
+    font-size: 14.76px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    min-height: 44px;
+    padding: 11px 12px;
+    border-radius: 4px;
+  }
+
+  .coupon-description {
+    font-size: 14px;
+    letter-spacing: -0.42px;
+    line-height: 1.45;
+  }
+
+  /* Figma mobile: сноска визуально над промокодом; desktop/tablet — порядок из DOM */
+  .coupon-footnote {
+    order: -1;
+    font-size: 7.38px;
+    letter-spacing: -0.1476px;
+    line-height: 1.2;
+    color: var(--coupon-footnote-muted);
+  }
+
+  /* Figma 297:674 — белый текст, pill, на всю ширину колонки */
+  .coupon-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    margin-top: 0;
+    height: auto;
+    min-height: 27px;
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.24px;
+    line-height: normal;
+    color: var(--lb-white);
+    background: var(--coupon-accent);
+  }
+
+  .coupon-cta:hover:not(:disabled) {
+    color: var(--lb-white);
+    filter: brightness(1.04);
+  }
+
+  .coupon-divider-vertical {
+    width: 1px;
+  }
+
+  /* Figma Mobile: py-[123px] — якорь сверху, не по центру экрана */
+  .coupon-root.coupon-root--host {
+    top: calc(123px + env(safe-area-inset-top, 0px));
+    transform: none;
+    max-height: calc(
+      100dvh - 123px - env(safe-area-inset-top, 0px) -
+        max(var(--coupon-host-bottom), env(safe-area-inset-bottom, 0px)) - var(--coupon-vp-y-gutter)
+    );
+  }
+
+  .coupon-root.coupon-root--host[data-ready="false"],
+  .coupon-root.coupon-root--host[data-ready="true"] {
+    top: calc(123px + env(safe-area-inset-top, 0px));
+    transform: none;
+  }
+
+  .coupon-panel {
+    max-height: min(
+      calc(
+        100dvh - 123px - env(safe-area-inset-top, 0px) -
+          max(var(--coupon-host-bottom), env(safe-area-inset-bottom, 0px)) - var(--coupon-vp-y-gutter)
+      ),
+      calc(
+        100vh - 123px - env(safe-area-inset-top, 0px) -
+          max(var(--coupon-host-bottom), env(safe-area-inset-bottom, 0px)) - var(--coupon-vp-y-gutter)
+      )
+    );
+  }
+
+  .coupon-panel[data-expanded="true"] .coupon-expand {
+    max-height: min(
+      calc(
+        100dvh - 123px - env(safe-area-inset-top, 0px) -
+          max(var(--coupon-host-bottom), env(safe-area-inset-bottom, 0px)) - var(--coupon-vp-y-gutter)
+      ),
+      calc(
+        100vh - 123px - env(safe-area-inset-top, 0px) -
+          max(var(--coupon-host-bottom), env(safe-area-inset-bottom, 0px)) - var(--coupon-vp-y-gutter)
+      )
+    );
+  }
+}
+
+@media (max-width: 380px) {
+  .coupon-body {
+    padding: 12px 10px;
+  }
+
+  .coupon-body-main {
+    gap: 10px;
+  }
+
+  .coupon-title {
+    font-size: 14.5px;
+    letter-spacing: -0.43px;
+  }
+
+  .coupon-code {
+    font-size: 13.75px;
+    letter-spacing: 0.11em;
+    min-height: 42px;
+    padding: 10px 10px;
+  }
+
+  .coupon-footnote {
+    font-size: 7px;
+    letter-spacing: -0.12px;
+    line-height: 1.22;
+  }
+
+  .coupon-cta {
+    font-size: 11px;
+    min-height: 26px;
+    padding: 5px 10px;
+  }
+}
+
+/* Низкий вьюпорт: не раздувать рейку; на узкой ширине высоту не перебивать блоком max-width:480px */
+@media (max-height: 720px) and (min-width: 481px) {
+  .coupon-root {
+    --coupon-rail-pad: 18px 14px 16px;
+    --coupon-rail-min-height: min(380px, calc(100dvh - 48px));
+  }
+}
+
+@media (max-height: 720px) and (max-width: 480px) {
+  .coupon-root {
+    --coupon-rail-pad: 8px 12px 8px;
+    --coupon-rail-min-height: min(132px, calc(100dvh - 44px));
+  }
+}
+
+/* Низкий экран только на ширине планшета+: не ломаем компактные стили ≤480px */
+@media (max-height: 720px) and (min-width: 481px) {
+  .coupon-body {
+    padding: 18px 16px 14px;
+  }
+
+  .coupon-body-top {
+    gap: 16px;
+  }
+
+  .coupon-code {
+    min-height: 52px;
+    padding: 12px 10px;
+  }
+
+  .coupon-cta {
+    min-height: 46px;
+    height: 46px;
+  }
+
+  .coupon-footnote {
+    font-size: 11px;
+  }
+}
+
+@media (max-height: 720px) and (max-width: 480px) {
+  .coupon-body {
+    padding: 10px 10px 10px;
+  }
+
+  .coupon-body-main {
+    gap: 10px;
+  }
+
+  .coupon-code {
+    min-height: 40px;
+    padding: 10px 10px;
+    font-size: 14px;
+  }
+
+  .coupon-footnote {
+    font-size: 7px;
+    line-height: 1.22;
+  }
+
+  .coupon-cta {
+    min-height: 24px;
+    height: auto;
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}

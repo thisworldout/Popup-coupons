@@ -1,0 +1,17 @@
+/**
+ * Tilda: выровнять блок с логотипом по левому краю с виджетом купона
+ * (coupon-root--host использует те же отступы, что --coupon-host-inline в css/widget.css).
+ *
+ * Куда вставить: Site settings → More → HTML/CSS → CSS (или блок T123 «HTML-код» в подвале).
+ *
+ * Замените #rec313107954 на id вашего Zero / шапочного блока с логотипом
+ * (как в DOM: div#rec… под header#t-header).
+ *
+ * Синхронно с css/widget.css: по умолчанию 20px (логотип t135). Если задали hostInlinePx — подставьте те же px.
+ */
+
+/* Левый отступ записи = как у купона */
+header#t-header #rec313107954.t-rec {
+  padding-left: max(20px, env(safe-area-inset-left, 0px)) !important;
+  box-sizing: border-box !important;
+}

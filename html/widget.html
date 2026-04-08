@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru" class="coupon-widget-doc">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Промокод</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/widget.css" />
+  </head>
+  <body class="coupon-widget-doc">
+    <!-- Вставка на сайт: hidden + class coupon-root--host + data-ready="false" до загрузки JS -->
+    <div class="coupon-root" id="coupon-root" hidden data-ready="false">
+      <div class="coupon-panel" id="coupon-panel" data-expanded="false">
+        <button
+          type="button"
+          class="coupon-rail coupon-header"
+          id="coupon-header"
+          aria-expanded="false"
+        >
+          <span class="coupon-rail-stack">
+            <span class="coupon-rail-rot">
+              <span class="coupon-rail-label-wrap">
+                <span class="coupon-rail-label-row">
+                  <span class="coupon-title" id="coupon-title">Скидка</span>
+                  <span class="coupon-kicker" id="coupon-kicker">10%</span>
+                </span>
+              </span>
+              <span class="coupon-chevron" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 15l-6-6-6 6" />
+                </svg>
+              </span>
+            </span>
+          </span>
+        </button>
+        <div class="coupon-expand" id="coupon-collapse">
+          <div class="coupon-expand-inner">
+            <div class="coupon-divider-vertical" aria-hidden="true"></div>
+            <div class="coupon-main">
+              <div class="coupon-body" id="coupon-body">
+                <div class="coupon-body-top">
+                  <div class="coupon-body-head">
+                    <button
+                      type="button"
+                      class="coupon-close-full"
+                      id="coupon-close-full"
+                      aria-label="Закрыть промокод"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="coupon-body-main">
+                    <div class="coupon-code-wrap">
+                      <button
+                        type="button"
+                        class="coupon-code"
+                        id="coupon-code"
+                        tabindex="0"
+                      ></button>
+                    </div>
+                    <p class="coupon-description" id="coupon-description" hidden></p>
+                    <p class="coupon-copy-hint" id="coupon-copy-hint" hidden></p>
+                    <p class="coupon-footnote" id="coupon-footnote" hidden></p>
+                    <button type="button" class="coupon-cta" id="coupon-cta" hidden>
+                      Скопировать
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/config.js" defer></script>
+    <script src="../js/widget.js" defer></script>
+  </body>
+</html>

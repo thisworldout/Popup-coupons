@@ -1,0 +1,46 @@
+/**
+ * Tilda: виджет видео (.video-widget) — влево как у логотипа/купона, на desktop компактнее.
+ *
+ * Куда вставить: Site settings → More → HTML/CSS → CSS (или T123 внизу страницы).
+ *
+ * Замените #rec567019161 на id вашего блока с видео (из DOM: div#rec… > … > .video-widget).
+ * Чтобы правило действовало на все блоки с этим классом — удалите #rec567019161.t-rec из селекторов.
+ *
+ * Слева как у купона / шапки: 20px + safe-area (см. tilda-header-align-with-coupon.css).
+ */
+
+#rec567019161.t-rec .t-width.t-width_100 {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+}
+
+#rec567019161.t-rec .video-widget,
+#rec567019161.t-rec .video-widget__container {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* Левый край блока = как у шапки / купона */
+#rec567019161.t-rec .t-container_100 {
+  padding-left: max(20px, env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(20px, env(safe-area-inset-right, 0px)) !important;
+  box-sizing: border-box !important;
+}
+
+/* Desktop: меньше превью (подстройте px под макет) */
+@media (min-width: 769px) {
+  #rec567019161.t-rec .video-widget__container {
+    width: auto !important;
+    max-width: 108px !important;
+  }
+
+  #rec567019161.t-rec video.video-widget__video {
+    width: 100% !important;
+    max-width: 108px !important;
+    height: auto !important;
+    max-height: 148px !important;
+    object-fit: cover;
+  }
+}

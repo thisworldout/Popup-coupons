@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Coupon widget — fixed, слева, по центру по высоте</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/widget.css" />
+    <style>
+      body.host-fixed-demo {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+      .host-fixed-demo__scroll {
+        padding: 28px max(24px, 12vw) 40vh max(120px, 18vw);
+        max-width: 42rem;
+        line-height: 1.55;
+      }
+      .host-fixed-demo__scroll h1 {
+        margin: 0 0 0.75em;
+        font-size: 1.35rem;
+      }
+      .host-fixed-demo__scroll p {
+        margin: 0 0 1em;
+      }
+      .host-fixed-demo__legend {
+        position: fixed;
+        top: max(12px, env(safe-area-inset-top, 0px));
+        right: max(12px, env(safe-area-inset-right, 0px));
+        z-index: 10000;
+        max-width: min(340px, calc(100vw - 24px));
+        padding: 10px 12px;
+        font-size: 11.5px;
+        line-height: 1.45;
+        background: rgba(15, 23, 42, 0.93);
+        color: #e2e8f0;
+        border-radius: 8px;
+        font-family: ui-monospace, "JetBrains Mono", monospace;
+        pointer-events: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+      }
+      .host-fixed-demo__legend strong {
+        color: #fff;
+        font-weight: 600;
+      }
+      .host-fixed-demo__legend kbd {
+        display: inline-block;
+        background: #334155;
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body class="host-fixed-demo">
+    <!--
+      Без class coupon-widget-doc на body — как встраивание на сайт:
+      widget.js добавляет coupon-root--host и при необходимости переносит узел в body.
+      CSS: position:fixed; left: var(--coupon-host-inline); top:50%; translateY(-50%).
+    -->
+    <aside class="host-fixed-demo__legend" aria-hidden="true">
+      <strong>Прод-режим позиционирования</strong><br />
+      На <kbd>body</kbd> нет <kbd>coupon-widget-doc</kbd> → <kbd>coupon-root--host</kbd> + hoist.<br />
+      <kbd>fixed</kbd> · слева отступ <kbd>--coupon-host-inline</kbd> · по вертикали центр окна
+      (<kbd>top:50%</kbd> + <kbd>translateY(-50%)</kbd>).<br />
+      Прокрути страницу — виджет остаётся прижатым к левому краю и по центру высоты вьюпорта.
+    </aside>
+    <div class="host-fixed-demo__scroll">
+      <h1>Тестовая страница: прокрутка</h1>
+      <p>
+        Ниже — заполнитель, чтобы проверить, что виджет не едет вместе с контентом: он закреплён к
+        окну (viewport), а не к документу.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris.
+      </p>
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+      <p>
+        Повторите прокрутку вверх-вниз и откройте панель промокода: блок целиком должен оставаться
+        вертикально по центру экрана, а не «прилипать» только к рейке.
+      </p>
+      <p>
+        Arcu dictum varius duis at consectetur lorem donec massa sapien. Nisl condimentum id
+        venenatis a condimentum vitae sapien pellentesque habitant.
+      </p>
+      <p>
+        Egestas sed sed risus pretium quam vulputate dignissim suspendisse in. Fermentum posuere
+        urna nec tincidunt praesent semper feugiat nibh sed.
+      </p>
+    </div>
+    <div class="coupon-root" id="coupon-root" hidden data-ready="false">
+      <div class="coupon-panel" id="coupon-panel" data-expanded="false">
+        <button
+          type="button"
+          class="coupon-rail coupon-header"
+          id="coupon-header"
+          aria-expanded="false"
+        >
+          <span class="coupon-rail-stack">
+            <span class="coupon-rail-rot">
+              <span class="coupon-rail-label-wrap">
+                <span class="coupon-rail-label-row">
+                  <span class="coupon-title" id="coupon-title">Скидка</span>
+                  <span class="coupon-kicker" id="coupon-kicker">10%</span>
+                </span>
+              </span>
+              <span class="coupon-chevron" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 15l-6-6-6 6" />
+                </svg>
+              </span>
+            </span>
+          </span>
+        </button>
+        <div class="coupon-expand" id="coupon-collapse">
+          <div class="coupon-expand-inner">
+            <div class="coupon-divider-vertical" aria-hidden="true"></div>
+            <div class="coupon-main">
+              <div class="coupon-body" id="coupon-body">
+                <div class="coupon-body-top">
+                  <div class="coupon-body-head">
+                    <button
+                      type="button"
+                      class="coupon-close-full"
+                      id="coupon-close-full"
+                      aria-label="Закрыть промокод"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="coupon-body-main">
+                    <div class="coupon-code-wrap">
+                      <button type="button" class="coupon-code" id="coupon-code" tabindex="0"></button>
+                    </div>
+                    <p class="coupon-description" id="coupon-description" hidden></p>
+                    <p class="coupon-copy-hint" id="coupon-copy-hint" hidden></p>
+                    <p class="coupon-footnote" id="coupon-footnote" hidden></p>
+                    <button type="button" class="coupon-cta" id="coupon-cta" hidden>Скопировать</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/config.js"></script>
+    <script src="/js/widget.js"></script>
+    <script src="/local-test/coupon-test-reset.js"></script>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+Локальный стенд для виджета (обход file:// и кэша)
+================================================
+
+Корень HTTP-сервера — каталог Website-Coupon (родитель этой папки).
+
+1) Запуск сервера (из этого каталога):
+
+   cd "$(dirname "$0")"
+   cd ..
+   python3 -m http.server 8765
+
+   Или одной строкой из корня репозитория:
+
+   python3 -m http.server 8765
+
+2) Откройте в браузере (не file://):
+
+   http://127.0.0.1:8765/local-test/host-split.html
+      Вставка как на сайте: отдельные css/widget.css + js/*.js
+
+   http://127.0.0.1:8765/local-test/host-fixed-center-left.html
+      Тот же split, но без coupon-widget-doc на body — виджет как на проде: fixed, слева,
+      по вертикали центр окна (top:50% + translateY(-50%)); есть прокрутка и подсказка на экране.
+
+   http://127.0.0.1:8765/html/widget.html
+      Демо-страница из репозитория
+
+   http://127.0.0.1:8765/gallery/index.html
+      Каталог сценариев внедрения: ссылки на все демо и статические примеры вставки.
+
+   http://127.0.0.1:8765/widget-all-in-one.html
+      Один файл. После правок пересобрать из исходников:
+
+   python3 local-test/sync_all_in_one.py
+
+      (или по частям: sync_all_in_one_style.py — только CSS/позиция в <style>;
+       sync_all_in_one_js.py — COUPON_CONFIG + логика из js/config.js и js/widget.js)
+
+3) Проверка #coupon-header: в свёрнутом виде высота ~200px (на узком вьюпорте ~176px).
+   Если снова ~76px — в all-in-one устарел блок <style>; python3 local-test/sync_all_in_one_style.py
+
+4) Страница host-no-root-class.html — без class="coupon-root" на контейнере;
+   скрипт должен добавить класс сам; рейка не должна схлопываться.
+
+5) Кнопка «Reset: сброс закрытия» (правый нижний угол) на local-test/*.html и widget-all-in-one.html:
+   очищает localStorage/sessionStorage виджета (в т.ч. паузу после крестика) и перезагружает страницу.
+
+--------------------------------------------------
+Cursor: Visual Editor (боковая панель со слайдерами)
+--------------------------------------------------
+
+Это не включается файлами в этом репозитории — только клиент Cursor.
+
+1) Запустите локальный сервер (п. 1–2 выше), URL вида:
+   http://127.0.0.1:8765/local-test/host-split.html
+
+2) Откройте встроенный Browser у агента:
+   - Cmd+Shift+P → командa вроде Browser / Open Browser (точное имя зависит от версии)
+   - либо Agents Window (Cmd+Shift+P → Agents Window), затем превью страницы в браузере Cursor
+
+3) В панели встроенного браузера включите режим выбора / визуального редактирования
+   (иконка «выделение элемента» или кисть / Design — смотрите тулбар вкладки).
+   Описание возможностей: https://cursor.com/blog/browser-visual-editor
+
+4) Cursor 3.x: в changelog указано «Design Mode» (⌘⇧D в Agents Window) — разметка и таргет
+   элементов для агента; отдельно: «Reduced the browser automation tool surface» — полный сайдбар
+   со всеми слайдерами из блога может быть недоступен или сильно урезан относительно Cursor 2.2.
+   См. https://cursor.com/changelog/3-0
+
+5) Если панели со слайдерами нет: проверьте канал обновлений (Stable / Nightly), Cursor → About,
+   и форум https://forum.cursor.com — это ограничение продукта, не бага проекта Website-Coupon.
