@@ -126,10 +126,10 @@
       новый HTML-стенд и новая секция здесь.
     </p>
     <p class="note">
-      Локально откройте из <strong>корня</strong> репозитория:
-      <code>python3 -m http.server 8765</code>
-      — иначе пути <code>/css/...</code> не сработают. Полный список URL см.
-      <a href="/local-test/LOCAL_SERVER.txt"><code>local-test/LOCAL_SERVER.txt</code></a>.
+      Локально: из корня репозитория <code>python3 -m http.server 8765</code> и откройте эту страницу.
+      Стенды в <code>local-test/</code> используют <strong>относительные</strong> пути к <code>css/</code> и
+      <code>js/</code> — так же работают на GitHub Pages. Список URL см.
+      <a href="../local-test/LOCAL_SERVER.txt"><code>local-test/LOCAL_SERVER.txt</code></a>.
     </p>
 
     <section id="split">
@@ -139,16 +139,16 @@
         Как на сайте: шрифты, таблица стилей, разметка <code>#coupon-root</code>, затем скрипты с
         <code>defer</code>. Конфиг правьте в <code>js/config.js</code>.
       </p>
-      <a class="open" href="/local-test/host-split.html" target="_blank" rel="noopener">Открыть демо →</a>
+      <a class="open" href="../local-test/host-split.html" target="_blank" rel="noopener">Открыть демо →</a>
       <div class="snippet-wrap">
         <pre id="snippet-split">&lt;link rel="preconnect" href="https://fonts.googleapis.com" /&gt;
 &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /&gt;
 &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet" /&gt;
-&lt;!-- Подставьте базовый URL вместо / при выкладке --&gt;
-&lt;link rel="stylesheet" href="/css/widget.css" /&gt;
+&lt;!-- На своём сайте укажите пути от корня домена или полные URL --&gt;
+&lt;link rel="stylesheet" href="css/widget.css" /&gt;
 &lt;!-- Разметка: скопируйте блок #coupon-root из html/widget.html --&gt;
-&lt;script src="/js/config.js" defer&gt;&lt;/script&gt;
-&lt;script src="/js/widget.js" defer&gt;&lt;/script&gt;</pre>
+&lt;script src="js/config.js" defer&gt;&lt;/script&gt;
+&lt;script src="js/widget.js" defer&gt;&lt;/script&gt;</pre>
       </div>
       <div class="copy-row">
         <button type="button" class="copy" data-target="snippet-split">Копировать фрагмент</button>
@@ -162,7 +162,7 @@
         Тело страницы без <code>coupon-widget-doc</code>: виджет в режиме хоста (fixed, слева). Длинная
         прокрутка контента для проверки.
       </p>
-      <a class="open" href="/local-test/host-fixed-center-left.html" target="_blank" rel="noopener"
+      <a class="open" href="../local-test/host-fixed-center-left.html" target="_blank" rel="noopener"
         >Открыть демо →</a
       >
       <ul class="hint">
@@ -177,7 +177,7 @@
       <p class="desc">
         Проверка, что <code>widget.js</code> сам добавляет класс — токены CSS не должны ломаться.
       </p>
-      <a class="open" href="/local-test/host-no-root-class.html" target="_blank" rel="noopener"
+      <a class="open" href="../local-test/host-no-root-class.html" target="_blank" rel="noopener"
         >Открыть демо →</a
       >
     </section>
@@ -189,7 +189,7 @@
         Эталонная страница репозитория с относительными путями <code>../css/</code>. Удобно сверять
         структуру DOM перед копированием на хостинг.
       </p>
-      <a class="open" href="/html/widget.html" target="_blank" rel="noopener">Открыть демо →</a>
+      <a class="open" href="../html/widget.html" target="_blank" rel="noopener">Открыть демо →</a>
     </section>
 
     <section id="all-in-one">
@@ -198,7 +198,7 @@
       <p class="desc">
         Всё в одном HTML: стили и скрипты встроены после синхронизации с исходниками.
       </p>
-      <a class="open" href="/widget-all-in-one.html" target="_blank" rel="noopener">Открыть демо →</a>
+      <a class="open" href="../widget-all-in-one.html" target="_blank" rel="noopener">Открыть демо →</a>
       <div class="snippet-wrap">
         <pre id="snippet-aio"># После правок в css/ или js/:
 python3 local-test/sync_all_in_one.py
@@ -218,7 +218,7 @@ python3 local-test/sync_all_in_one.py
         Поля <code>window.COUPON_CONFIG</code> — единая точка настроек для всех демо и прод-вставок
         (код, сноска, CTA, отступы, поведение при наведении и т.д.).
       </p>
-      <a class="open" href="/js/config.js" target="_blank" rel="noopener">Открыть файл →</a>
+      <a class="open" href="../js/config.js" target="_blank" rel="noopener">Открыть файл →</a>
     </section>
 
     <script>

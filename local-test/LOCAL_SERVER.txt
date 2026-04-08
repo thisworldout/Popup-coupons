@@ -15,6 +15,9 @@
 
 2) Откройте в браузере (не file://):
 
+   http://127.0.0.1:8765/
+      Главная: ссылки на gallery и widget-all-in-one (как на GitHub Pages).
+
    http://127.0.0.1:8765/local-test/host-split.html
       Вставка как на сайте: отдельные css/widget.css + js/*.js
 
