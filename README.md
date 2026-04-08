@@ -1,5 +1,7 @@
 # Popup-coupons
 
+![Preview](https://repository-images.githubusercontent.com/1204812018/06bcea96-dfe1-4343-837c-3af6d948fa7b)
+
 [![Live demo — GitHub Pages](https://img.shields.io/badge/live%20demo-GitHub%20Pages-2962ff?style=flat-square)](https://thisworldout.github.io/Popup-coupons/)
 
 Встраиваемый виджет промокода: вертикальная рейка «Скидка» и раскрывающаяся панель с кодом, описанием и CTA. Стили и логика в `css/widget.css` и `js/widget.js`.
